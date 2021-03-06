@@ -1,0 +1,64 @@
+plugins {
+    id 'org.springframework.boot' version '2.4.3'
+    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+    id 'com.diffplug.spotless' version '5.11.0'
+    id 'java'
+    id 'jacoco'
+}
+
+group = 'com.ryctabo'
+version = '1.0.0-SNAPSHOT'
+sourceCompatibility = '11'
+
+spotless {
+    java {
+        importOrder()
+        removeUnusedImports()
+        trimTrailingWhitespace()
+        googleJavaFormat('1.9').aosp()
+    }
+}
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+ext {
+    set('springCloudVersion', "2020.0.1")
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis-reactive'
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
+    implementation 'org.apache.commons:commons-lang3'
+
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+    annotationProcessor 'org.projectlombok:lombok'
+
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'io.projectreactor:reactor-test'
+    testImplementation 'com.playtika.testcontainers:embedded-redis:2.0.3'
+    testImplementation 'org.springframework.cloud:spring-cloud-starter-bootstrap'
+}
+
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+    }
+}
+
+test {
+    useJUnitPlatform()
+    finalizedBy jacocoTestReport
+}
+
+jacocoTestReport {
+    dependsOn test
+}

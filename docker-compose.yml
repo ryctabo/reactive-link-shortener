@@ -1,0 +1,10 @@
+version: '3.9'
+services:
+  app:
+    container_name: reactive-link-shortener
+    build: .
+    ports:
+    - 8080:8080
+  redis:
+    image: 'redis:alpine'
+    container_name: redis-for-app
